@@ -1,0 +1,1553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Goody's Lawn Care — North Idaho's #1 Lawn Care Company</title>
+  <meta name="description" content="Goody's Lawn Care — #1 Commercial & Residential Lawn Care in North Idaho. Mowing, fertilization, aeration, cleanup, and snow removal. Serving Coeur d'Alene, Post Falls, Hayden & beyond." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@800;900&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Playfair+Display:ital@1&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Reset ─────────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ─── Tokens ─────────────────────────────────────────────────── */
+    :root {
+      --soil:   #1C1A14;
+      --bark:   #2E2A1E;
+      --hay:    #C8A96E;
+      --sage:   #6B7C5C;
+      --frost:  #EDE8DC;
+      --moss:   #3D4A32;
+      --clay:   #8C5E3C;
+      --font-display: 'Unbounded', sans-serif;
+      --font-body:    'DM Mono', monospace;
+      --font-accent:  'Playfair Display', serif;
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--soil);
+      color: var(--frost);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── Page Load States ───────────────────────────────────────── */
+    .load-hidden {
+      opacity: 0;
+      transform: translateY(-100%);
+    }
+    .hero-hidden {
+      opacity: 0;
+      transform: translateX(-40px);
+    }
+    .mark-hidden {
+      opacity: 0;
+      transform: scaleY(0);
+      transform-origin: top;
+    }
+    .cta-hidden {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    .noise-hidden { opacity: 0; }
+
+    /* ─── Scroll Reveal ──────────────────────────────────────────── */
+    [data-reveal] {
+      opacity: 0;
+      transition: opacity 0.7s var(--ease-out-expo),
+                  transform 0.7s var(--ease-out-expo),
+                  clip-path 0.9s var(--ease-out-expo);
+    }
+    [data-reveal="right"] { transform: translateX(-30px); }
+    [data-reveal="up"]    { transform: translateY(20px); }
+    [data-reveal="scale"] { transform: scaleY(0); transform-origin: top; }
+    [data-reveal="clip"]  { clip-path: inset(0 100% 0 0); }
+    [data-reveal].revealed {
+      opacity: 1;
+      transform: none;
+      clip-path: inset(0 0% 0 0);
+    }
+
+    /* ─── NAV ───────────────────────────────────────────────────── */
+    #nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 5%;
+      transition: background 0.4s ease, border-bottom 0.4s ease;
+    }
+    #nav.scrolled {
+      background: var(--soil);
+      border-bottom: 1px solid rgba(200, 169, 110, 0.25);
+    }
+    .nav-logo {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 1.1rem;
+      letter-spacing: 0.15em;
+      color: var(--hay);
+      text-decoration: none;
+      transition: letter-spacing 0.4s var(--ease-out-expo);
+    }
+    .nav-logo:hover { letter-spacing: 0.35em; }
+    .nav-phone {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      color: var(--frost);
+      text-decoration: none;
+      opacity: 0.8;
+      transition: opacity 0.2s;
+    }
+    .nav-phone:hover { opacity: 1; }
+    .nav-menu-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      color: var(--frost);
+      text-transform: uppercase;
+      margin-left: 2rem;
+      transition: color 0.2s;
+    }
+    .nav-menu-btn:hover { color: var(--hay); }
+
+    /* ─── Full-screen Menu Overlay ───────────────────────────────── */
+    #menu-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      background: var(--soil);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 8% 10%;
+      clip-path: polygon(0 0, 100% 0, 100% 0, 0 0);
+      transition: clip-path 0.6s var(--ease-out-expo);
+      pointer-events: none;
+    }
+    #menu-overlay.open {
+      clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+      pointer-events: all;
+    }
+    .menu-close {
+      position: absolute;
+      top: 24px; right: 5%;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      color: var(--frost);
+      text-transform: uppercase;
+    }
+    .menu-close:hover { color: var(--hay); }
+    .menu-items { list-style: none; }
+    .menu-item {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.4s var(--ease-out-expo), transform 0.4s var(--ease-out-expo);
+    }
+    #menu-overlay.open .menu-item { opacity: 1; transform: none; }
+    #menu-overlay.open .menu-item:nth-child(1) { transition-delay: 0.1s; }
+    #menu-overlay.open .menu-item:nth-child(2) { transition-delay: 0.18s; }
+    #menu-overlay.open .menu-item:nth-child(3) { transition-delay: 0.26s; }
+    #menu-overlay.open .menu-item:nth-child(4) { transition-delay: 0.34s; }
+    #menu-overlay.open .menu-item:nth-child(5) { transition-delay: 0.42s; }
+    #menu-overlay.open .menu-item:nth-child(6) { transition-delay: 0.50s; }
+    .menu-item a {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(2rem, 5vw, 4rem);
+      color: var(--frost);
+      text-decoration: none;
+      display: block;
+      padding: 0.15em 0;
+      transition: color 0.2s;
+    }
+    .menu-item a:hover { color: var(--hay); }
+    .menu-footer {
+      position: absolute;
+      bottom: 8%;
+      left: 10%;
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      color: var(--frost);
+      opacity: 0.5;
+    }
+
+    /* ─── HERO ──────────────────────────────────────────────────── */
+    #hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 5% 8%;
+      overflow: hidden;
+    }
+    .hero-paths {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+    .hero-paths svg {
+      width: 100%;
+      height: 100%;
+    }
+    .hero-noise {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 200px;
+      mix-blend-mode: overlay;
+    }
+
+    /* The Mark — vertical bar signature */
+    .mark {
+      position: absolute;
+      width: 4px;
+      background: var(--hay);
+      z-index: 3;
+    }
+    .mark-hero {
+      left: 65%;
+      top: 15%;
+      height: 40vh;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 4;
+    }
+    .hero-cascade {
+      line-height: 0.9;
+      margin-bottom: 3rem;
+    }
+    .hero-line {
+      display: block;
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: clamp(64px, 12vw, 160px);
+      color: var(--frost);
+      letter-spacing: -0.02em;
+    }
+    .hero-line-1 { margin-left: -1vw; }
+    .hero-line-2 { margin-left: 8vw; }
+    .hero-line-3 { margin-left: 2vw; }
+
+    .hero-vertical-label {
+      position: absolute;
+      right: 5%;
+      top: 50%;
+      transform: translateY(-50%) rotate(90deg);
+      transform-origin: center;
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      color: var(--hay);
+      opacity: 0.7;
+      white-space: nowrap;
+      z-index: 4;
+    }
+
+    .hero-cta-zone {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    .hero-cta-label {
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      letter-spacing: 0.18em;
+      color: var(--hay);
+      text-transform: uppercase;
+    }
+    .btn-primary {
+      display: inline-block;
+      width: 280px;
+      padding: 18px 0;
+      text-align: center;
+      background: var(--hay);
+      color: var(--soil);
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: 2px solid var(--hay);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-primary:hover {
+      background: transparent;
+      color: var(--hay);
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 6%;
+      right: 5%;
+      z-index: 4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .hero-scroll span {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      color: var(--frost);
+      opacity: 0.5;
+    }
+    .scroll-line {
+      width: 1px;
+      height: 40px;
+      background: var(--frost);
+      opacity: 0.3;
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%   { transform: scaleY(0); transform-origin: top; opacity: 0.5; }
+      50%  { transform: scaleY(1); transform-origin: top; opacity: 0.3; }
+      100% { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
+    }
+
+    /* ─── INTERRUPT STRIP ────────────────────────────────────────── */
+    #interrupt {
+      background: var(--hay);
+      padding: 28px 5%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .interrupt-text {
+      font-family: var(--font-accent);
+      font-style: italic;
+      font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+      color: var(--soil);
+      text-align: center;
+      transition: clip-path 1s var(--ease-out-expo);
+    }
+
+    /* ─── SERVICES ───────────────────────────────────────────────── */
+    #services {
+      position: relative;
+      background: var(--soil);
+      padding: 8rem 5% 8rem;
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 0 4rem;
+      overflow: hidden;
+    }
+    .services-label-col {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .services-rotated-label {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: clamp(2rem, 4vw, 3rem);
+      color: var(--sage);
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      letter-spacing: 0.1em;
+      opacity: 0.6;
+      user-select: none;
+    }
+    .services-list { list-style: none; }
+    .service-row {
+      padding: 2rem 1.5rem;
+      border-top: 1px solid rgba(237, 232, 220, 0.12);
+      cursor: default;
+      transition: background 0.25s ease;
+      position: relative;
+    }
+    .service-row:last-child { border-bottom: 1px solid rgba(237, 232, 220, 0.12); }
+    .service-row:hover { background: var(--bark); }
+    .service-row-header {
+      display: flex;
+      align-items: baseline;
+      gap: 1.5rem;
+      margin-bottom: 0.6rem;
+    }
+    .service-num {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--hay);
+      transition: color 0.2s, transform 0.15s;
+      min-width: 2rem;
+    }
+    .service-row:hover .service-num { color: var(--clay); }
+    .service-rule {
+      flex: 1;
+      height: 1px;
+      background: rgba(237, 232, 220, 0.2);
+    }
+    .service-arrow {
+      font-size: 1.1rem;
+      color: var(--hay);
+      opacity: 0;
+      transform: translateX(-10px);
+      transition: opacity 0.2s, transform 0.2s;
+    }
+    .service-row:hover .service-arrow {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    .service-name {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+      color: var(--frost);
+      letter-spacing: -0.01em;
+      margin-bottom: 0.4rem;
+    }
+    .service-desc {
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      color: var(--frost);
+      opacity: 0.55;
+      line-height: 1.6;
+    }
+
+    /* The Mark between services and credentials */
+    .mark-services {
+      position: absolute;
+      right: 12%;
+      top: 10%;
+      height: 120px;
+    }
+
+    /* ─── CREDENTIALS ────────────────────────────────────────────── */
+    #credentials {
+      position: relative;
+      background: var(--bark);
+      padding: 5rem 5%;
+      overflow: hidden;
+      border-top: 1px solid rgba(200, 169, 110, 0.2);
+      border-bottom: 1px solid rgba(200, 169, 110, 0.2);
+    }
+    .credentials-ghost {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: clamp(80px, 18vw, 200px);
+      color: var(--frost);
+      opacity: 0.03;
+      white-space: nowrap;
+      pointer-events: none;
+      user-select: none;
+      letter-spacing: -0.04em;
+    }
+    .credentials-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+    }
+    .credential-item {
+      padding: 1.5rem 2rem;
+      border-right: 1px solid rgba(237, 232, 220, 0.1);
+    }
+    .credential-item:last-child { border-right: none; }
+    .credential-num {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: clamp(2rem, 4vw, 3rem);
+      color: var(--hay);
+      display: block;
+      margin-bottom: 0.75rem;
+    }
+    .credential-label {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--frost);
+      opacity: 0.7;
+      line-height: 1.5;
+    }
+
+    /* ─── TERRITORY ──────────────────────────────────────────────── */
+    #territory {
+      position: relative;
+      background: var(--soil);
+      padding: 8rem 5%;
+      display: grid;
+      grid-template-columns: 3fr 2fr;
+      gap: 0 4rem;
+      align-items: center;
+      overflow: hidden;
+    }
+    .territory-panel {
+      border-left: 2px solid var(--sage);
+      padding-left: 3rem;
+    }
+    .territory-eyebrow {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--hay);
+      margin-bottom: 2.5rem;
+    }
+    .territory-cities { list-style: none; }
+    .territory-city {
+      font-family: var(--font-body);
+      font-weight: 500;
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--frost);
+      padding: 0.6rem 0;
+      border-bottom: 1px solid rgba(237, 232, 220, 0.08);
+    }
+    .territory-city.surrounding {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      color: var(--hay);
+      opacity: 0.8;
+      border-bottom: none;
+      margin-top: 0.5rem;
+    }
+    .territory-bg-word {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: clamp(3rem, 8vw, 8rem);
+      color: var(--moss);
+      opacity: 0.15;
+      transform: rotate(-4deg);
+      letter-spacing: -0.02em;
+      line-height: 1;
+      user-select: none;
+      text-align: center;
+    }
+
+    /* The Mark beside territory */
+    .mark-territory {
+      position: absolute;
+      left: 5%;
+      top: 15%;
+      height: 200px;
+    }
+
+    /* ─── ABOUT ─────────────────────────────────────────────────── */
+    #about {
+      background: var(--soil);
+      padding: 8rem 5%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6rem;
+      align-items: center;
+      position: relative;
+    }
+    .about-eyebrow {
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      color: var(--hay);
+      text-transform: uppercase;
+      margin-bottom: 2.5rem;
+    }
+    .about-heading {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      color: var(--frost);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 3rem;
+    }
+    .about-iam-label {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: 0.1em;
+      color: var(--hay);
+      margin-bottom: 1.25rem;
+    }
+    .about-iam-list {
+      list-style: none;
+      margin-bottom: 2.5rem;
+    }
+    .about-iam-list li {
+      font-family: var(--font-body);
+      font-size: 1rem;
+      color: var(--frost);
+      opacity: 0.75;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(237, 232, 220, 0.08);
+    }
+    .about-iam-list li:first-child { border-top: 1px solid rgba(237, 232, 220, 0.08); }
+    .about-philosophy {
+      margin-bottom: 2.5rem;
+    }
+    .about-philosophy p {
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      line-height: 1.8;
+      color: var(--frost);
+      opacity: 0.6;
+      margin-bottom: 1rem;
+    }
+    .about-closing {
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      color: var(--hay);
+      opacity: 0.8;
+      margin-bottom: 0.5rem;
+    }
+    .about-sig {
+      font-family: var(--font-accent);
+      font-style: italic;
+      font-size: 2rem;
+      color: var(--frost);
+      line-height: 1;
+    }
+    .about-right {
+      position: relative;
+    }
+    .about-photo-wrap {
+      position: relative;
+    }
+    .about-photo {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+      aspect-ratio: 4/5;
+      filter: grayscale(15%) contrast(1.05);
+    }
+    .about-photo-caption {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      color: var(--frost);
+      opacity: 0.4;
+      text-transform: uppercase;
+      margin-top: 1rem;
+      text-align: right;
+    }
+    .about-mark {
+      position: absolute;
+      left: -20px;
+      top: 10%;
+      width: 4px;
+      height: 30%;
+      background: var(--sage);
+    }
+    @media (max-width: 768px) {
+      #about {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+      }
+      .about-right { order: -1; }
+      .about-mark { display: none; }
+    }
+
+    /* ─── FORM ───────────────────────────────────────────────────── */
+    #contact {
+      position: relative;
+      background: var(--bark);
+      padding: 8rem 5%;
+      overflow: hidden;
+    }
+    .contact-shape {
+      position: absolute;
+      top: 0; right: 0;
+      width: 35%;
+      height: 50%;
+      background: var(--moss);
+      opacity: 0.1;
+      clip-path: polygon(30% 0, 100% 0, 100% 100%, 100% 100%);
+      pointer-events: none;
+    }
+    .contact-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 1100px;
+    }
+    .contact-eyebrow {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--hay);
+      margin-bottom: 3rem;
+    }
+    .contact-layout {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 6rem;
+      align-items: start;
+    }
+    .contact-pull {
+      font-family: var(--font-accent);
+      font-style: italic;
+      font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+      color: var(--hay);
+      line-height: 1.4;
+      margin-bottom: 1rem;
+    }
+    .contact-attribution {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      color: var(--frost);
+      opacity: 0.5;
+      margin-bottom: 2.5rem;
+    }
+    .contact-info { list-style: none; }
+    .contact-info li {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      color: var(--frost);
+      opacity: 0.7;
+      padding: 0.5rem 0;
+    }
+    .contact-info li strong {
+      display: block;
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--hay);
+      opacity: 1;
+      margin-bottom: 0.2rem;
+    }
+
+    /* Form */
+    .form-field {
+      margin-bottom: 2rem;
+    }
+    .form-label {
+      display: block;
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--frost);
+      opacity: 0.5;
+      margin-bottom: 0.5rem;
+    }
+    .form-input,
+    .form-select,
+    .form-textarea {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(237, 232, 220, 0.25);
+      color: var(--frost);
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      padding: 12px 0;
+      outline: none;
+      transition: border-color 0.2s;
+      -webkit-appearance: none;
+      appearance: none;
+      border-radius: 0;
+      position: relative;
+    }
+    .form-input:focus,
+    .form-select:focus,
+    .form-textarea:focus {
+      border-bottom-color: var(--hay);
+    }
+    .form-input.error,
+    .form-select.error,
+    .form-textarea.error {
+      border-bottom-color: var(--clay);
+    }
+    .form-textarea { resize: none; min-height: 100px; }
+    .form-select option { background: var(--bark); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+    .btn-submit {
+      width: 100%;
+      height: 64px;
+      background: var(--hay);
+      color: var(--soil);
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: color 0.3s;
+      margin-top: 1rem;
+    }
+    .btn-submit::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--clay);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s var(--ease-out-expo);
+    }
+    .btn-submit:hover::before { transform: scaleX(1); }
+    .btn-submit span { position: relative; z-index: 1; }
+    .form-success {
+      display: none;
+      text-align: center;
+      padding: 2rem;
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      color: var(--hay);
+      letter-spacing: 0.05em;
+    }
+
+    /* ─── FOOTER ─────────────────────────────────────────────────── */
+    #footer {
+      position: relative;
+      background: var(--soil);
+      padding: 5rem 5% 0;
+      overflow: hidden;
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 4rem;
+      padding-bottom: 4rem;
+      align-items: start;
+    }
+    .footer-brand {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: clamp(2rem, 4vw, 3rem);
+      color: var(--hay);
+      letter-spacing: 0.05em;
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+    .footer-tagline {
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      color: var(--frost);
+      opacity: 0.45;
+      line-height: 1.6;
+      max-width: 200px;
+    }
+    .footer-col-label {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--hay);
+      margin-bottom: 1.5rem;
+      opacity: 0.8;
+    }
+    .footer-links { list-style: none; }
+    .footer-links li { margin-bottom: 0.6rem; }
+    .footer-links a {
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      color: var(--frost);
+      opacity: 0.6;
+      text-decoration: none;
+      letter-spacing: 0;
+      transition: color 0.2s, opacity 0.2s, letter-spacing 0.2s;
+    }
+    .footer-links a:hover { color: var(--hay); opacity: 1; letter-spacing: 0.05em; }
+    .footer-contact-item {
+      font-family: var(--font-body);
+      font-size: 0.82rem;
+      color: var(--frost);
+      opacity: 0.6;
+      margin-bottom: 0.6rem;
+    }
+    .footer-contact-item strong {
+      display: block;
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--hay);
+      opacity: 1;
+      margin-bottom: 0.15rem;
+    }
+    .footer-location {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--hay);
+      opacity: 0.7;
+      margin-top: 1rem;
+    }
+
+    /* The Mark — footer (sage, not hay) */
+    .mark-footer {
+      position: absolute;
+      right: 8%;
+      top: 8%;
+      height: 80px;
+      background: var(--sage) !important;
+    }
+
+    .footer-bar {
+      border-top: 1px solid rgba(107, 124, 92, 0.3);
+      padding: 1.5rem 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer-copy {
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      color: var(--frost);
+      opacity: 0.35;
+      text-transform: uppercase;
+    }
+    .footer-copy a {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(237, 232, 220, 0.2);
+      transition: opacity 0.2s;
+    }
+    .footer-copy a:hover { opacity: 1; }
+
+    /* ─── LEGAL PAGES ──────────────────────────────────────────── */
+    .legal-page {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: var(--soil);
+      overflow-y: auto;
+      padding: 4rem 5%;
+    }
+    .legal-page:target { display: block; }
+    .legal-close {
+      position: fixed;
+      top: 1.5rem;
+      right: 2rem;
+      z-index: 2001;
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--hay);
+      background: none;
+      border: 1px solid var(--hay);
+      padding: 0.5rem 1.2rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+    .legal-close:hover { background: var(--hay); color: var(--soil); }
+    .legal-page h1 {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+      color: var(--frost);
+      margin-bottom: 0.5rem;
+    }
+    .legal-page .legal-updated {
+      font-size: 0.75rem;
+      color: var(--hay);
+      opacity: 0.7;
+      margin-bottom: 2.5rem;
+    }
+    .legal-page h2 {
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--hay);
+      margin: 2rem 0 0.75rem;
+    }
+    .legal-page p, .legal-page li {
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      color: var(--frost);
+      opacity: 0.75;
+      line-height: 1.8;
+      max-width: 720px;
+    }
+    .legal-page ul { list-style: disc; padding-left: 1.5rem; margin: 0.5rem 0; }
+    .legal-page li { margin-bottom: 0.3rem; }
+
+    /* ─── RESPONSIVE ─────────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      #services {
+        grid-template-columns: 1fr;
+        padding: 5rem 5%;
+      }
+      .services-label-col { display: none; }
+      #territory {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+      }
+      .territory-bg-word { display: none; }
+      .contact-layout { grid-template-columns: 1fr; gap: 3rem; }
+      .credentials-grid { grid-template-columns: repeat(2, 1fr); }
+      .credential-item:nth-child(2) { border-right: none; }
+      .footer-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .mark-hero { display: none; }
+      .mark-services { display: none; }
+      .mark-territory { display: none; }
+    }
+    @media (max-width: 600px) {
+      .hero-line-1, .hero-line-2, .hero-line-3 { margin-left: 0 !important; }
+      .form-row { grid-template-columns: 1fr; }
+      .credentials-grid { grid-template-columns: 1fr 1fr; }
+      .nav-phone { display: none; }
+      .hero-vertical-label { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ─── NAV ──────────────────────────────────────────────────── -->
+  <nav id="nav" class="load-hidden">
+    <a class="nav-logo" href="#hero">GOODY'S</a>
+    <div style="display:flex;align-items:center;">
+      <a class="nav-phone" href="tel:+12085550100">(208) 555-0100</a>
+      <button class="nav-menu-btn" id="menu-btn" aria-label="Open menu">MENU</button>
+    </div>
+  </nav>
+
+  <!-- ─── MENU OVERLAY ─────────────────────────────────────────── -->
+  <div id="menu-overlay" role="dialog" aria-modal="true" aria-label="Site menu">
+    <button class="menu-close" id="menu-close">CLOSE</button>
+    <ul class="menu-items">
+      <li class="menu-item"><a href="#services" onclick="closeMenu()">Services</a></li>
+      <li class="menu-item"><a href="#credentials" onclick="closeMenu()">About</a></li>
+      <li class="menu-item"><a href="#territory" onclick="closeMenu()">Service Area</a></li>
+      <li class="menu-item"><a href="#about" onclick="closeMenu()">About</a></li>
+      <li class="menu-item"><a href="#contact" onclick="closeMenu()">Get a Quote</a></li>
+      <li class="menu-item"><a href="tel:+12085550100" onclick="closeMenu()">(208) 555-0100</a></li>
+    </ul>
+    <p class="menu-footer">NORTH IDAHO · EST. 2019</p>
+  </div>
+
+  <!-- ─── HERO ─────────────────────────────────────────────────── -->
+  <section id="hero">
+
+    <!-- Animated SVG Background Paths -->
+    <div class="hero-paths" id="hero-paths" aria-hidden="true">
+      <!-- Generated by JS below -->
+    </div>
+
+    <!-- Noise Overlay -->
+    <div class="hero-noise noise-hidden" id="hero-noise"></div>
+
+    <!-- The Mark #1 -->
+    <div class="mark mark-hero mark-hidden" id="hero-mark"></div>
+
+    <!-- Vertical Label -->
+    <div class="hero-vertical-label hero-hidden" id="hero-vlabel">EST. 2019 · LICENSED &amp; INSURED</div>
+
+    <!-- Cascading Headline -->
+    <div class="hero-content">
+      <div class="hero-cascade">
+        <span class="hero-line hero-line-1 hero-hidden" id="hero-l1">NORTH</span>
+        <span class="hero-line hero-line-2 hero-hidden" id="hero-l2">IDAHO'S</span>
+        <span class="hero-line hero-line-3 hero-hidden" id="hero-l3">FINEST LAWN</span>
+      </div>
+
+      <div class="hero-cta-zone cta-hidden" id="hero-cta">
+        <span class="hero-cta-label">// FREE ESTIMATE</span>
+        <a class="btn-primary" href="#contact">Request Service</a>
+      </div>
+    </div>
+
+    <!-- Scroll Indicator -->
+    <div class="hero-scroll">
+      <span>SCROLL</span>
+      <div class="scroll-line"></div>
+    </div>
+
+  </section>
+
+  <!-- ─── INTERRUPT STRIP ───────────────────────────────────────── -->
+  <div id="interrupt">
+    <p class="interrupt-text" data-reveal="clip">
+      "Your yard is the first thing your neighbors see."
+    </p>
+  </div>
+
+  <!-- ─── SERVICES ─────────────────────────────────────────────── -->
+  <section id="services">
+    <div class="mark mark-services" data-reveal="scale"></div>
+    <div class="services-label-col" aria-hidden="true">
+      <div class="services-rotated-label">SERVICES</div>
+    </div>
+    <ul class="services-list">
+      <li class="service-row" data-reveal="right" data-delay="0">
+        <div class="service-row-header">
+          <span class="service-num">01</span>
+          <span class="service-rule"></span>
+          <span class="service-arrow">→</span>
+        </div>
+        <div class="service-name">Lawn Mowing</div>
+        <div class="service-desc">Weekly & bi-weekly residential service. Professional-grade equipment. Consistent cuts that keep your property looking sharp all season.</div>
+      </li>
+      <li class="service-row" data-reveal="right" data-delay="120">
+        <div class="service-row-header">
+          <span class="service-num">02</span>
+          <span class="service-rule"></span>
+          <span class="service-arrow">→</span>
+        </div>
+        <div class="service-name">Fertilization</div>
+        <div class="service-desc">Seasonal programs calibrated to North Idaho soil. Deep-green results without burning. Your lawn fed right, on schedule.</div>
+      </li>
+      <li class="service-row" data-reveal="right" data-delay="240">
+        <div class="service-row-header">
+          <span class="service-num">03</span>
+          <span class="service-rule"></span>
+          <span class="service-arrow">→</span>
+        </div>
+        <div class="service-name">Aeration &amp; Seeding</div>
+        <div class="service-desc">Core aeration relieves compaction. Overseeding thickens thin turf. The two treatments that pay for themselves.</div>
+      </li>
+      <li class="service-row" data-reveal="right" data-delay="360">
+        <div class="service-row-header">
+          <span class="service-num">04</span>
+          <span class="service-rule"></span>
+          <span class="service-arrow">→</span>
+        </div>
+        <div class="service-name">Yard Cleanup &amp; Hauling</div>
+        <div class="service-desc">Spring and fall cleanups. Debris removal, edging, bed clean-out. We haul everything off — you get your weekend back.</div>
+      </li>
+      <li class="service-row" data-reveal="right" data-delay="480">
+        <div class="service-row-header">
+          <span class="service-num">05</span>
+          <span class="service-rule"></span>
+          <span class="service-arrow">→</span>
+        </div>
+        <div class="service-name">Residential Snow Removal</div>
+        <div class="service-desc">Driveways, walkways, and steps cleared before you wake up. Reliable all-season coverage when North Idaho winters hit hard.</div>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ─── CREDENTIALS ───────────────────────────────────────────── -->
+  <section id="credentials">
+    <div class="credentials-ghost" aria-hidden="true">100%</div>
+    <div class="credentials-grid">
+      <div class="credential-item" data-reveal="up" data-delay="0">
+        <span class="credential-num">01</span>
+        <span class="credential-label">Licensed &amp;<br>Insured</span>
+      </div>
+      <div class="credential-item" data-reveal="up" data-delay="100">
+        <span class="credential-num">02</span>
+        <span class="credential-label">North Idaho<br>Local</span>
+      </div>
+      <div class="credential-item" data-reveal="up" data-delay="200">
+        <span class="credential-num">03</span>
+        <span class="credential-label">Commercial &amp;<br>Residential</span>
+      </div>
+      <div class="credential-item" data-reveal="up" data-delay="300">
+        <span class="credential-num">04</span>
+        <span class="credential-label">Fast &amp;<br>Reliable</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── TERRITORY ─────────────────────────────────────────────── -->
+  <section id="territory">
+    <div class="mark mark-territory" data-reveal="scale"></div>
+    <div class="territory-panel">
+      <p class="territory-eyebrow">// SERVICE AREA</p>
+      <ul class="territory-cities">
+        <li class="territory-city" data-reveal="up" data-delay="0">Coeur d'Alene</li>
+        <li class="territory-city" data-reveal="up" data-delay="80">Post Falls</li>
+        <li class="territory-city" data-reveal="up" data-delay="160">Hayden</li>
+        <li class="territory-city" data-reveal="up" data-delay="240">Rathdrum</li>
+        <li class="territory-city" data-reveal="up" data-delay="320">Spirit Lake</li>
+        <li class="territory-city surrounding" data-reveal="up" data-delay="400">+ SURROUNDING COMMUNITIES</li>
+      </ul>
+    </div>
+    <div class="territory-bg-word" aria-hidden="true">TERRITORY</div>
+  </section>
+
+  <!-- ─── ABOUT ───────────────────────────────────────────────────── -->
+  <section id="about">
+    <div class="about-left">
+      <p class="about-eyebrow" data-reveal="up">// MEET YOUR GUY</p>
+      <h2 class="about-heading" data-reveal="up" data-delay="80">NICK<br>GOODSEN</h2>
+      <p class="about-iam-label">I AM...</p>
+      <ul class="about-iam-list">
+        <li data-reveal="right" data-delay="0">a follower and disciple of Jesus Christ.</li>
+        <li data-reveal="right" data-delay="80">a grateful husband.</li>
+        <li data-reveal="right" data-delay="160">a proud father.</li>
+        <li data-reveal="right" data-delay="240">an entrepreneur passionate about both community and lawn care.</li>
+      </ul>
+      <div class="about-philosophy">
+        <p data-reveal="up" data-delay="0">The first God ordained job was for man to rule and subdue the earth. To care for and nurture the world which we have been given. To tame and take pride in the garden work we do.</p>
+        <p data-reveal="up" data-delay="80">It is my privilege to work alongside my community to keep our part of His garden beautiful.</p>
+      </div>
+      <p class="about-closing">For His Glory,</p>
+      <p class="about-sig">Nick Goodsen</p>
+    </div>
+    <div class="about-right" data-reveal="up">
+      <div class="about-mark"></div>
+      <div class="about-photo-wrap">
+        <img class="about-photo" src="../brand_assets/family.webp" alt="Nick Goodsen and family" />
+        <p class="about-photo-caption">The Goodsens</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── CONTACT / QUOTE FORM ──────────────────────────────────── -->
+  <section id="contact">
+    <div class="contact-shape" aria-hidden="true"></div>
+    <div class="contact-inner">
+      <p class="contact-eyebrow">// REQUEST SERVICE</p>
+      <div class="contact-layout">
+        <div>
+          <p class="contact-pull" data-reveal="up" data-delay="0">"They showed up early and left it perfect."</p>
+          <p class="contact-attribution">— Coeur d'Alene homeowner</p>
+          <ul class="contact-info">
+            <li data-reveal="up" data-delay="100">
+              <strong>Phone</strong>
+              <a href="tel:+12085550100" style="color:inherit;text-decoration:none;">(208) 555-0100</a>
+            </li>
+            <li data-reveal="up" data-delay="180">
+              <strong>Hours</strong>
+              Mon – Sat, 7am – 6pm
+            </li>
+            <li data-reveal="up" data-delay="260">
+              <strong>Service Area</strong>
+              North Idaho
+            </li>
+          </ul>
+        </div>
+        <div>
+          <form id="quote-form" novalidate>
+            <div class="form-row">
+              <div class="form-field">
+                <label class="form-label" for="f-name">Name</label>
+                <input class="form-input" type="text" id="f-name" name="name" autocomplete="name" required />
+              </div>
+              <div class="form-field">
+                <label class="form-label" for="f-phone">Phone</label>
+                <input class="form-input" type="tel" id="f-phone" name="phone" autocomplete="tel" required />
+              </div>
+            </div>
+            <div class="form-field">
+              <label class="form-label" for="f-email">Email</label>
+              <input class="form-input" type="email" id="f-email" name="email" autocomplete="email" required />
+            </div>
+            <div class="form-field">
+              <label class="form-label" for="f-service">Service</label>
+              <select class="form-select" id="f-service" name="service" required>
+                <option value="" disabled selected>Select a service…</option>
+                <option value="mowing">Lawn Mowing</option>
+                <option value="fertilization">Fertilization</option>
+                <option value="aeration">Aeration &amp; Seeding</option>
+                <option value="cleanup">Yard Cleanup &amp; Hauling</option>
+                <option value="snow">Snow Removal</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label class="form-label" for="f-message">Message (optional)</label>
+              <textarea class="form-textarea" id="f-message" name="message" rows="3" placeholder="Any details about your property…"></textarea>
+            </div>
+            <button class="btn-submit" type="submit"><span>Submit Request</span></button>
+            <div class="form-success" id="form-success">
+              Request received — we'll be in touch within one business day.
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ────────────────────────────────────────────────── -->
+  <footer id="footer">
+    <div class="mark mark-footer" aria-hidden="true"></div>
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">GOODY'S</div>
+        <p class="footer-tagline">#1 Commercial &amp; Residential Lawn Care in North Idaho.</p>
+        <p class="footer-location">// NORTH IDAHO</p>
+      </div>
+      <div>
+        <p class="footer-col-label">Services</p>
+        <ul class="footer-links">
+          <li><a href="#services">Lawn Mowing</a></li>
+          <li><a href="#services">Fertilization</a></li>
+          <li><a href="#services">Aeration &amp; Seeding</a></li>
+          <li><a href="#services">Yard Cleanup &amp; Hauling</a></li>
+          <li><a href="#services">Snow Removal</a></li>
+        </ul>
+      </div>
+      <div>
+        <p class="footer-col-label">Contact</p>
+        <div class="footer-contact-item">
+          <strong>Phone</strong>
+          <a href="tel:+12085550100" style="color:inherit;text-decoration:none;">(208) 555-0100</a>
+        </div>
+        <div class="footer-contact-item">
+          <strong>Hours</strong>
+          Mon – Sat, 7am – 6pm
+        </div>
+        <div class="footer-contact-item">
+          <strong>Area</strong>
+          Coeur d'Alene, Post Falls,<br>Hayden, Rathdrum, Spirit Lake
+        </div>
+      </div>
+    </div>
+    <div class="footer-bar">
+      <span class="footer-copy">&copy; 2024 Goody's Lawn Care &middot; Coeur d'Alene, ID</span>
+      <span class="footer-copy">Licensed &amp; Insured &middot; <a href="#privacy">Privacy Policy</a> &middot; <a href="#terms">Terms &amp; Conditions</a></span>
+    </div>
+  </footer>
+
+  <!-- ─── PRIVACY POLICY ──────────────────────────────────────── -->
+  <div id="privacy" class="legal-page">
+    <a href="#footer" class="legal-close">Close</a>
+    <h1>Privacy Policy</h1>
+    <p class="legal-updated">Last updated: April 9, 2026</p>
+
+    <h2>Who We Are</h2>
+    <p>Goody's Lawn Care, LLC ("we," "us," "our") provides commercial and residential lawn care services in North Idaho. This policy describes how we collect, use, and protect your personal information.</p>
+
+    <h2>Information We Collect</h2>
+    <p>When you contact us by phone, text message, or through our website, we may collect:</p>
+    <ul>
+      <li>Name and contact information (phone number, email address)</li>
+      <li>Property address and service location</li>
+      <li>Details about the services you're requesting</li>
+      <li>Text message conversation history related to scheduling</li>
+      <li>Call recordings or transcripts when calls are handled by our automated assistant</li>
+    </ul>
+
+    <h2>How We Use Your Information</h2>
+    <p>We use your information to:</p>
+    <ul>
+      <li>Respond to your inquiries and service requests</li>
+      <li>Schedule and confirm consultations and appointments</li>
+      <li>Send follow-up messages related to your service inquiry</li>
+      <li>Provide and improve our lawn care services</li>
+    </ul>
+
+    <h2>Automated Messaging</h2>
+    <p>When you text or call our business number, you may interact with an AI-powered assistant that helps schedule consultations and answer questions. By initiating contact via text message, you consent to receive automated replies related to your inquiry. You can opt out of automated messages at any time by replying STOP.</p>
+
+    <h2>Information Sharing</h2>
+    <p>We do not sell, rent, or trade your personal information to third parties. We may share information with service providers (such as our phone and messaging platform) solely to facilitate communication with you.</p>
+
+    <h2>Data Retention</h2>
+    <p>We retain your contact information and conversation history for as long as needed to provide services and respond to inquiries. Inactive conversation data is automatically cleaned up after 72 hours.</p>
+
+    <h2>Contact Us</h2>
+    <p>If you have questions about this privacy policy, contact us by phone at (208) 551-1947 or text our business number.</p>
+  </div>
+
+  <!-- ─── TERMS & CONDITIONS ──────────────────────────────────── -->
+  <div id="terms" class="legal-page">
+    <a href="#footer" class="legal-close">Close</a>
+    <h1>Terms &amp; Conditions</h1>
+    <p class="legal-updated">Last updated: April 9, 2026</p>
+
+    <h2>Agreement to Terms</h2>
+    <p>By contacting Goody's Lawn Care, LLC ("we," "us," "our") via phone, text message, or this website, you agree to these terms and conditions.</p>
+
+    <h2>Services</h2>
+    <p>We provide commercial and residential lawn care services in the North Idaho area, including but not limited to lawn mowing, fertilization, aeration, yard cleanup, and snow removal. All services are subject to availability and scheduling.</p>
+
+    <h2>Communication &amp; Messaging</h2>
+    <p>By texting our business phone number, you consent to receive text message replies related to your inquiry, including appointment scheduling, confirmations, and follow-up messages. Message and data rates may apply depending on your carrier. Message frequency varies based on your interaction.</p>
+    <ul>
+      <li>Reply <strong>STOP</strong> at any time to opt out of automated messages</li>
+      <li>Reply <strong>HELP</strong> for assistance</li>
+    </ul>
+    <p>We are not responsible for delayed or undelivered messages caused by your carrier or device.</p>
+
+    <h2>Estimates &amp; Pricing</h2>
+    <p>Consultations scheduled through our system are free. Service quotes provided during consultations are estimates and may change based on actual property conditions. Final pricing is confirmed before work begins.</p>
+
+    <h2>Limitation of Liability</h2>
+    <p>Goody's Lawn Care provides services on an "as is" basis. We are not liable for any indirect, incidental, or consequential damages arising from the use of our services or communication systems.</p>
+
+    <h2>Changes to Terms</h2>
+    <p>We may update these terms at any time. Continued use of our services after changes constitutes acceptance of the updated terms.</p>
+
+    <h2>Contact Us</h2>
+    <p>Questions about these terms? Call us at (208) 551-1947 or text our business number.</p>
+  </div>
+
+  <script>
+    // ─── Generate Animated SVG Background Paths ──────────────────
+    (function() {
+      const container = document.getElementById('hero-paths');
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('viewBox', '0 0 696 316');
+      svg.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+      svg.style.cssText = 'width:100%;height:100%;position:absolute;inset:0;';
+
+      function makePaths(position) {
+        for (let i = 0; i < 36; i++) {
+          const p = i * 5 * position;
+          const q = i * 6;
+          const d = `M${-380 - p} ${-189 + q}C${-380 - p} ${-189 + q} ${-312 - p} ${216 - q} ${152 - p} ${343 - q}C${616 - p} ${470 - q} ${684 - p} ${875 - q} ${684 - p} ${875 - q}`;
+          // Opacity baked into stroke color to avoid unintended multiplication with keyframe opacity
+          const opacity = 0.04 + i * 0.004;
+          const width = 0.5 + i * 0.025;
+          const dur = 20 + (i * 0.4);
+          const delay = -(i * 0.7);
+
+          const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          path.setAttribute('d', d);
+          path.setAttribute('stroke', `rgba(237, 232, 220, ${opacity.toFixed(3)})`);
+          path.setAttribute('stroke-width', width);
+          path.setAttribute('fill', 'none');
+          // pathLength="1" normalizes path length so dasharray/dashoffset values are 0–1
+          // This is the SVG equivalent of Framer Motion's pathLength animation
+          path.setAttribute('pathLength', '1');
+          path.style.cssText = `
+            stroke-dasharray: 1;
+            stroke-dashoffset: 1;
+            animation: pathFlow ${dur}s linear ${delay}s infinite;
+          `;
+          svg.appendChild(path);
+        }
+      }
+
+      makePaths(1);
+      makePaths(-1);
+      container.appendChild(svg);
+
+      // Inject keyframe — dashoffset goes 1 → -1 (path draws itself across viewport)
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes pathFlow {
+          0%   { stroke-dashoffset: 1; }
+          100% { stroke-dashoffset: -1; }
+        }
+      `;
+      document.head.appendChild(style);
+    })();
+
+    // ─── Page Load Animation Sequence ────────────────────────────
+    document.addEventListener('DOMContentLoaded', function() {
+      const ease = 'cubic-bezier(0.16, 1, 0.3, 1)';
+      const dur = '700ms';
+
+      function show(el, extra) {
+        if (!el) return;
+        el.style.transition = `opacity ${dur} ${ease}, transform ${dur} ${ease}${extra ? ', ' + extra : ''}`;
+        el.classList.remove('load-hidden', 'hero-hidden', 'mark-hidden', 'cta-hidden', 'noise-hidden');
+      }
+
+      setTimeout(() => show(document.getElementById('nav')), 100);
+      setTimeout(() => show(document.getElementById('hero-l1')), 200);
+      setTimeout(() => show(document.getElementById('hero-l2')), 350);
+      setTimeout(() => show(document.getElementById('hero-l3')), 500);
+      setTimeout(() => show(document.getElementById('hero-vlabel')), 600);
+      setTimeout(() => {
+        const m = document.getElementById('hero-mark');
+        if (m) {
+          m.style.transition = `opacity 700ms ${ease}, transform 800ms ${ease}`;
+          m.classList.remove('mark-hidden');
+        }
+      }, 700);
+      setTimeout(() => show(document.getElementById('hero-cta')), 850);
+      setTimeout(() => {
+        const n = document.getElementById('hero-noise');
+        if (n) { n.style.transition = `opacity 600ms ease`; n.classList.remove('noise-hidden'); n.style.opacity = '0.04'; }
+      }, 900);
+    });
+
+    // ─── Nav Scroll Effect ────────────────────────────────────────
+    window.addEventListener('scroll', function() {
+      document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 80);
+    }, { passive: true });
+
+    // ─── Menu Overlay ─────────────────────────────────────────────
+    function openMenu() {
+      document.getElementById('menu-overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMenu() {
+      document.getElementById('menu-overlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    document.getElementById('menu-btn').addEventListener('click', openMenu);
+    document.getElementById('menu-close').addEventListener('click', closeMenu);
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeMenu();
+    });
+
+    // ─── Scroll Reveal (IntersectionObserver) ─────────────────────
+    const observer = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (!entry.isIntersecting) return;
+        const el = entry.target;
+        const delay = parseInt(el.dataset.delay || '0', 10);
+        setTimeout(function() {
+          el.classList.add('revealed');
+        }, delay);
+        observer.unobserve(el);
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('[data-reveal]').forEach(function(el) {
+      observer.observe(el);
+    });
+
+    // ─── Form Validation ─────────────────────────────────────────
+    document.getElementById('quote-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      let valid = true;
+      ['f-name', 'f-phone', 'f-email', 'f-service'].forEach(function(id) {
+        const el = document.getElementById(id);
+        if (!el.value.trim()) {
+          el.classList.add('error');
+          valid = false;
+        } else {
+          el.classList.remove('error');
+        }
+      });
+      if (!valid) return;
+      this.style.display = 'none';
+      const success = document.getElementById('form-success');
+      success.style.display = 'block';
+    });
+    ['f-name', 'f-phone', 'f-email', 'f-service'].forEach(function(id) {
+      document.getElementById(id).addEventListener('input', function() {
+        if (this.value.trim()) this.classList.remove('error');
+      });
+    });
+
+    // ─── Logo Letter-Spacing Pulse ────────────────────────────────
+    (function() {
+      const logo = document.querySelector('.nav-logo');
+      if (!logo) return;
+      logo.addEventListener('mouseenter', function() {
+        this.style.letterSpacing = '0.35em';
+        setTimeout(() => { this.style.letterSpacing = '0.15em'; }, 300);
+      });
+    })();
+  </script>
+</body>
+</html>
