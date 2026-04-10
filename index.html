@@ -1613,6 +1613,29 @@
       --chat--button--color--primary: #EDE8DC;
       --chat--button--background--primary--hover: #2E2A1E;
     }
+
+    /* Shrink the widget on phones so it doesn't dominate the screen */
+    @media (max-width: 600px) {
+      :root {
+        --chat--window--width: calc(100vw - 24px);
+        --chat--window--height: 70vh;
+        --chat--heading--font-size: 1.15em;
+        --chat--subtitle--font-size: 0.75em;
+      }
+      #n8n-chat .chat-window,
+      #n8n-chat .chat-window-wrapper {
+        max-width: calc(100vw - 24px) !important;
+        max-height: 70vh !important;
+        right: 12px !important;
+        bottom: 80px !important;
+      }
+      #n8n-chat .chat-window-toggle {
+        width: 56px !important;
+        height: 56px !important;
+        right: 12px !important;
+        bottom: 12px !important;
+      }
+    }
   </style>
   <script type="module">
     import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
