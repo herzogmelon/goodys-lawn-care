@@ -1617,23 +1617,44 @@
     /* Shrink the widget on phones so it doesn't dominate the screen */
     @media (max-width: 600px) {
       :root {
-        --chat--window--width: calc(100vw - 24px);
-        --chat--window--height: 70vh;
-        --chat--heading--font-size: 1.15em;
-        --chat--subtitle--font-size: 0.75em;
+        --chat--window--width: calc(100vw - 32px);
+        --chat--window--height: 60vh;
+        --chat--spacing: 0.6rem;
+        --chat--heading--font-size: 1em;
+        --chat--subtitle--font-size: 0.7em;
+        --chat--message--font-size: 0.78rem;
+        --chat--message-line-height: 1.35;
       }
-      #n8n-chat .chat-window,
-      #n8n-chat .chat-window-wrapper {
-        max-width: calc(100vw - 24px) !important;
-        max-height: 70vh !important;
-        right: 12px !important;
+      .chat-window,
+      .chat-window-wrapper {
+        max-width: calc(100vw - 32px) !important;
+        max-height: 60vh !important;
+        right: 16px !important;
         bottom: 80px !important;
       }
-      #n8n-chat .chat-window-toggle {
-        width: 56px !important;
-        height: 56px !important;
-        right: 12px !important;
-        bottom: 12px !important;
+      .chat-window {
+        width: calc(100vw - 32px) !important;
+        height: 60vh !important;
+      }
+      .chat-window .chat-header,
+      .chat-window header {
+        padding: 0.6rem 0.8rem !important;
+      }
+      .chat-window .chat-message,
+      .chat-window [class*="chat-message"] {
+        font-size: 0.78rem !important;
+        padding: 0.55rem 0.7rem !important;
+        line-height: 1.35 !important;
+      }
+      .chat-window-toggle {
+        width: 52px !important;
+        height: 52px !important;
+        right: 14px !important;
+        bottom: 14px !important;
+      }
+      .chat-window-toggle svg {
+        width: 24px !important;
+        height: 24px !important;
       }
     }
   </style>
