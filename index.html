@@ -99,6 +99,19 @@
       transition: letter-spacing 0.4s var(--ease-out-expo);
     }
     .nav-logo:hover { letter-spacing: 0.35em; }
+    /* Faith-based brand flourish — small cross flanking the GOODY'S wordmark.
+       Mirrors Nick's existing logo treatment (cross integrated near the G). */
+    .brand-cross {
+      display: inline-block;
+      font-family: var(--font-display);
+      font-weight: 900;
+      color: var(--hay);
+      transform: translateY(-0.08em);
+      margin: 0 0.18em;
+      opacity: 0.95;
+    }
+    .nav-logo .brand-cross { font-size: 0.85em; }
+    .footer-brand .brand-cross { font-size: 0.7em; transform: translateY(-0.18em); margin: 0 0.22em; }
     .nav-phone {
       font-family: var(--font-body);
       font-size: 0.85rem;
@@ -248,7 +261,9 @@
     }
     .hero-line-1 { margin-left: -1vw; }
     .hero-line-2 { margin-left: 8vw; }
-    .hero-line-3 { margin-left: 2vw; }
+    /* Line 3 carries the longest copy ("FINEST LAWN CARE") so it ships smaller
+       to avoid overflow on narrower viewports. */
+    .hero-line-3 { margin-left: 2vw; font-size: clamp(44px, 8vw, 108px); }
 
     .hero-vertical-label {
       position: absolute;
@@ -1026,9 +1041,9 @@
 
   <!-- ─── NAV ──────────────────────────────────────────────────── -->
   <nav id="nav" class="load-hidden">
-    <a class="nav-logo" href="#hero">GOODY'S</a>
+    <a class="nav-logo" href="#hero"><span class="brand-cross" aria-hidden="true">&#10013;</span>GOODY'S<span class="brand-cross" aria-hidden="true">&#10013;</span></a>
     <div style="display:flex;align-items:center;">
-      <a class="nav-phone" href="tel:+12085550100">(208) 555-0100</a>
+      <a class="nav-phone" href="tel:+12085516393">(208) 551-6393</a>
       <button class="nav-menu-btn" id="menu-btn" aria-label="Open menu">MENU</button>
     </div>
   </nav>
@@ -1042,7 +1057,7 @@
       <li class="menu-item"><a href="#territory" onclick="closeMenu()">Service Area</a></li>
       <li class="menu-item"><a href="#about" onclick="closeMenu()">About</a></li>
       <li class="menu-item"><a href="#contact" onclick="closeMenu()">Get a Quote</a></li>
-      <li class="menu-item"><a href="tel:+12085550100" onclick="closeMenu()">(208) 555-0100</a></li>
+      <li class="menu-item"><a href="tel:+12085516393" onclick="closeMenu()">(208) 551-6393</a></li>
     </ul>
     <p class="menu-footer">NORTH IDAHO · EST. 2019</p>
   </div>
@@ -1069,7 +1084,7 @@
       <div class="hero-cascade">
         <span class="hero-line hero-line-1 hero-hidden" id="hero-l1">NORTH</span>
         <span class="hero-line hero-line-2 hero-hidden" id="hero-l2">IDAHO'S</span>
-        <span class="hero-line hero-line-3 hero-hidden" id="hero-l3">FINEST LAWN</span>
+        <span class="hero-line hero-line-3 hero-hidden" id="hero-l3">FINEST LAWN CARE</span>
       </div>
 
       <div class="hero-cta-zone cta-hidden" id="hero-cta">
@@ -1181,8 +1196,7 @@
         <li class="territory-city" data-reveal="up" data-delay="80">Post Falls</li>
         <li class="territory-city" data-reveal="up" data-delay="160">Hayden</li>
         <li class="territory-city" data-reveal="up" data-delay="240">Rathdrum</li>
-        <li class="territory-city" data-reveal="up" data-delay="320">Spirit Lake</li>
-        <li class="territory-city surrounding" data-reveal="up" data-delay="400">+ SURROUNDING COMMUNITIES</li>
+        <li class="territory-city surrounding" data-reveal="up" data-delay="320">+ SURROUNDING COMMUNITIES</li>
       </ul>
     </div>
     <div class="territory-bg-word" aria-hidden="true">TERRITORY</div>
@@ -1228,7 +1242,7 @@
           <ul class="contact-info">
             <li data-reveal="up" data-delay="100">
               <strong>Phone</strong>
-              <a href="tel:+12085550100" style="color:inherit;text-decoration:none;">(208) 555-0100</a>
+              <a href="tel:+12085516393" style="color:inherit;text-decoration:none;">(208) 551-6393</a>
             </li>
             <li data-reveal="up" data-delay="180">
               <strong>Hours</strong>
@@ -1286,7 +1300,7 @@
     <div class="mark mark-footer" aria-hidden="true"></div>
     <div class="footer-grid">
       <div>
-        <div class="footer-brand">GOODY'S</div>
+        <div class="footer-brand"><span class="brand-cross" aria-hidden="true">&#10013;</span>GOODY'S<span class="brand-cross" aria-hidden="true">&#10013;</span></div>
         <p class="footer-tagline">#1 Commercial &amp; Residential Lawn Care in North Idaho.</p>
         <p class="footer-location">// NORTH IDAHO</p>
       </div>
@@ -1304,7 +1318,7 @@
         <p class="footer-col-label">Contact</p>
         <div class="footer-contact-item">
           <strong>Phone</strong>
-          <a href="tel:+12085550100" style="color:inherit;text-decoration:none;">(208) 555-0100</a>
+          <a href="tel:+12085516393" style="color:inherit;text-decoration:none;">(208) 551-6393</a>
         </div>
         <div class="footer-contact-item">
           <strong>Hours</strong>
@@ -1312,7 +1326,7 @@
         </div>
         <div class="footer-contact-item">
           <strong>Area</strong>
-          Coeur d'Alene, Post Falls,<br>Hayden, Rathdrum, Spirit Lake
+          Coeur d'Alene, Post Falls,<br>Hayden, Rathdrum
         </div>
       </div>
     </div>
@@ -1360,7 +1374,7 @@
     <p>We retain your contact information and conversation history for as long as needed to provide services and respond to inquiries. Inactive conversation data is automatically cleaned up after 72 hours.</p>
 
     <h2>Contact Us</h2>
-    <p>If you have questions about this privacy policy, contact us by phone at (208) 551-1947 or text our business number.</p>
+    <p>If you have questions about this privacy policy, contact us by phone at (208) 551-6393 or text our business number.</p>
   </div>
 
   <!-- ─── TERMS & CONDITIONS ──────────────────────────────────── -->
@@ -1393,7 +1407,7 @@
     <p>We may update these terms at any time. Continued use of our services after changes constitutes acceptance of the updated terms.</p>
 
     <h2>Contact Us</h2>
-    <p>Questions about these terms? Call us at (208) 551-1947 or text our business number.</p>
+    <p>Questions about these terms? Call us at (208) 551-6393 or text our business number.</p>
   </div>
 
   <script>
@@ -1548,6 +1562,94 @@
         setTimeout(() => { this.style.letterSpacing = '0.15em'; }, 300);
       });
     })();
+  </script>
+
+  <!-- ─── n8n Chat Widget (Goodys — Website Chat Lead Capture, n8n WF5) ─── -->
+  <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
+  <style>
+    /* Brand the embedded @n8n/chat widget to match Goody's earth-tone palette */
+    :root {
+      --chat--color-primary: #C8A96E;        /* hay (gold accent) */
+      --chat--color-primary-shade-50: #b8985e;
+      --chat--color-primary-shade-100: #a88750;
+      --chat--color-secondary: #6B7C5C;      /* sage */
+      --chat--color-secondary-shade-50: #5a6a4d;
+      --chat--color-white: #ffffff;
+      --chat--color-light: #EDE8DC;          /* frost */
+      --chat--color-light-shade-50: #d9d3c5;
+      --chat--color-light-shade-100: #c2bca8;
+      --chat--color-medium: #c2bca8;
+      --chat--color-dark: #1C1A14;           /* soil */
+      --chat--color-disabled: #c2bca8;
+      --chat--color-typing: #6B7C5C;
+
+      --chat--font-family: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+      --chat--window--width: 380px;
+      --chat--window--height: 600px;
+      --chat--window--z-index: 9999;
+
+      --chat--header--background: #1C1A14;
+      --chat--header--color: #EDE8DC;
+      --chat--heading--font-size: 1.4em;
+      --chat--subtitle--font-size: 0.85em;
+
+      --chat--message--bot--background: #1C1A14;
+      --chat--message--bot--color: #EDE8DC;
+      --chat--message--user--background: #C8A96E;
+      --chat--message--user--color: #1C1A14;
+
+      --chat--toggle--background: #C8A96E;
+      --chat--toggle--hover--background: #b8985e;
+      --chat--toggle--active--background: #a88750;
+      --chat--toggle--color: #1C1A14;
+
+      --chat--body--background: #EDE8DC;
+      --chat--footer--background: #EDE8DC;
+      --chat--footer--color: #1C1A14;
+
+      --chat--input--background: #ffffff;
+      --chat--input--text-color: #1C1A14;
+      --chat--button--background--primary: #1C1A14;
+      --chat--button--color--primary: #EDE8DC;
+      --chat--button--background--primary--hover: #2E2A1E;
+    }
+  </style>
+  <script type="module">
+    import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
+    const chat = createChat({
+      webhookUrl: 'https://broadheadautomations.app.n8n.cloud/webhook/goodys-web-chat/chat',
+      mode: 'window',
+      showWelcomeScreen: false,
+      defaultLanguage: 'en',
+      initialMessages: [
+        "Hey — I'm Goody's virtual assistant.",
+        "Tell me about your property and what you need (mow, cleanup, landscaping, snow) and I'll line you up with Nick."
+      ],
+      i18n: {
+        en: {
+          title: "GOODY'S",
+          subtitle: "We usually reply in a few minutes.",
+          footer: '',
+          getStarted: 'Start chat',
+          inputPlaceholder: 'Type your message…',
+          closeButtonTooltip: 'Close chat'
+        }
+      }
+    });
+
+    // Auto-open the chat 5s after the page loads, but only on the visitor's
+    // first view in this tab/session — don't pester repeat visitors.
+    // Note: .chat-window is always in the DOM (v-show), so we can't use it as
+    // an "already open" check — rely on sessionStorage instead.
+    if (!sessionStorage.getItem('goodysChatAutoOpened')) {
+      setTimeout(() => {
+        const toggle = document.querySelector('.chat-window-toggle');
+        if (toggle) {
+          toggle.click();
+          sessionStorage.setItem('goodysChatAutoOpened', '1');
+        }
+      }, 5000);
+    }
   </script>
 </body>
 </html>
