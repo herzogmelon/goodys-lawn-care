@@ -1667,5 +1667,537 @@
     })();
   </script>
 
+  <!-- ═══════════════════════════════════════════════════════════════
+       Goody's Estimate Chat — deterministic state machine.
+       Hits WF6 webhooks (broadheadautomations.app.n8n.cloud).
+       Rebuilt 2026-04-14 to replace the deleted @n8n/chat AI agent.
+       ═══════════════════════════════════════════════════════════════ -->
+  <style>
+    .gd-chat-bubble {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9000;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--hay);
+      color: var(--soil);
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.25s var(--ease-out-expo);
+    }
+    .gd-chat-bubble:hover { transform: scale(1.08); }
+    .gd-chat-bubble svg { width: 26px; height: 26px; fill: var(--soil); }
+    .gd-chat-bubble .gd-pulse {
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      border: 2px solid var(--hay);
+      opacity: 0.7;
+      animation: gd-pulse 2s var(--ease-out-expo) infinite;
+      pointer-events: none;
+    }
+    @keyframes gd-pulse {
+      0%   { transform: scale(0.85); opacity: 0.7; }
+      100% { transform: scale(1.4);  opacity: 0;   }
+    }
+
+    .gd-chat-window {
+      position: fixed;
+      bottom: 100px;
+      right: 24px;
+      z-index: 9001;
+      width: 360px;
+      max-width: calc(100vw - 32px);
+      height: 540px;
+      max-height: calc(100vh - 140px);
+      background: var(--bark);
+      border: 1px solid rgba(200,169,110,0.25);
+      border-radius: 14px;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.55);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      font-family: var(--font-body);
+      color: var(--frost);
+    }
+    .gd-chat-window.gd-open { display: flex; }
+    .gd-chat-header {
+      padding: 14px 18px;
+      background: var(--soil);
+      border-bottom: 1px solid rgba(200,169,110,0.18);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .gd-chat-header .gd-title {
+      font-family: var(--font-display);
+      font-size: 14px;
+      letter-spacing: 0.08em;
+      color: var(--hay);
+    }
+    .gd-chat-header .gd-sub {
+      font-size: 10px;
+      color: rgba(237,232,220,0.55);
+      margin-top: 2px;
+    }
+    .gd-chat-close {
+      background: none;
+      border: none;
+      color: var(--frost);
+      font-size: 22px;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0 4px;
+      opacity: 0.7;
+    }
+    .gd-chat-close:hover { opacity: 1; }
+
+    .gd-chat-log {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--hay) transparent;
+    }
+    .gd-chat-log::-webkit-scrollbar { width: 6px; }
+    .gd-chat-log::-webkit-scrollbar-thumb { background: rgba(200,169,110,0.4); border-radius: 3px; }
+
+    .gd-msg {
+      max-width: 82%;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 13px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    .gd-msg-bot {
+      background: rgba(200,169,110,0.15);
+      color: var(--frost);
+      border-bottom-left-radius: 4px;
+      align-self: flex-start;
+    }
+    .gd-msg-user {
+      background: var(--sage);
+      color: var(--soil);
+      border-bottom-right-radius: 4px;
+      align-self: flex-end;
+    }
+    .gd-typing {
+      display: inline-flex;
+      gap: 3px;
+      padding: 12px 14px;
+    }
+    .gd-typing span {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--hay);
+      animation: gd-bounce 1.2s infinite;
+    }
+    .gd-typing span:nth-child(2) { animation-delay: 0.15s; }
+    .gd-typing span:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes gd-bounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+      30% { transform: translateY(-5px); opacity: 1; }
+    }
+
+    .gd-chat-input-area {
+      padding: 12px;
+      border-top: 1px solid rgba(200,169,110,0.18);
+      background: var(--soil);
+    }
+    .gd-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .gd-chip {
+      background: transparent;
+      border: 1px solid var(--hay);
+      color: var(--hay);
+      font-family: var(--font-body);
+      font-size: 12px;
+      padding: 8px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .gd-chip:hover {
+      background: var(--hay);
+      color: var(--soil);
+    }
+    .gd-chip:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .gd-text-row {
+      display: flex;
+      gap: 6px;
+    }
+    .gd-text-input {
+      flex: 1;
+      background: var(--bark);
+      border: 1px solid rgba(200,169,110,0.3);
+      border-radius: 8px;
+      color: var(--frost);
+      font-family: var(--font-body);
+      font-size: 13px;
+      padding: 10px 12px;
+      outline: none;
+    }
+    .gd-text-input:focus {
+      border-color: var(--hay);
+    }
+    .gd-send-btn {
+      background: var(--hay);
+      color: var(--soil);
+      border: none;
+      border-radius: 8px;
+      padding: 0 16px;
+      font-family: var(--font-display);
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      cursor: pointer;
+    }
+    .gd-send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .gd-error {
+      color: #e89191;
+      font-size: 11px;
+      margin-top: 6px;
+    }
+    @media (max-width: 480px) {
+      .gd-chat-window {
+        right: 12px;
+        left: 12px;
+        bottom: 90px;
+        width: auto;
+        max-width: none;
+      }
+      .gd-chat-bubble { right: 16px; bottom: 16px; }
+    }
+  </style>
+
+  <button class="gd-chat-bubble" id="gd-chat-bubble" aria-label="Open chat">
+    <span class="gd-pulse"></span>
+    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 5.94 2 10.8c0 2.54 1.27 4.83 3.31 6.46-.13.97-.55 2.7-1.97 4.39 0 0 2.92-.32 5.4-1.99.95.27 1.96.42 3.01.42 5.52 0 10-3.94 10-8.8C22 5.94 17.52 2 12 2z"/></svg>
+  </button>
+
+  <div class="gd-chat-window" id="gd-chat-window" role="dialog" aria-label="Chat with Goody's">
+    <div class="gd-chat-header">
+      <div>
+        <div class="gd-title">GOODY'S</div>
+        <div class="gd-sub">Free estimate scheduling</div>
+      </div>
+      <button class="gd-chat-close" id="gd-chat-close" aria-label="Close chat">×</button>
+    </div>
+    <div class="gd-chat-log" id="gd-chat-log"></div>
+    <div class="gd-chat-input-area" id="gd-chat-input-area"></div>
+  </div>
+
+  <script>
+  (function() {
+    const WEBHOOK_BASE = 'https://broadheadautomations.app.n8n.cloud/webhook';
+    const ALLOWED_CITIES = ['post falls', 'hayden lake', 'hayden', "coeur d'alene", 'cda', 'harrison'];
+
+    const bubble    = document.getElementById('gd-chat-bubble');
+    const win       = document.getElementById('gd-chat-window');
+    const closeBtn  = document.getElementById('gd-chat-close');
+    const log       = document.getElementById('gd-chat-log');
+    const inputArea = document.getElementById('gd-chat-input-area');
+
+    const lead = { name: '', phone: '', service_type: '', address: '' };
+    let started = false;
+
+    function open()  { win.classList.add('gd-open');  bubble.style.display = 'none'; if (!started) { started = true; runIntro(); } }
+    function close() { win.classList.remove('gd-open'); bubble.style.display = 'flex'; }
+    bubble.addEventListener('click', open);
+    closeBtn.addEventListener('click', close);
+
+    if (!sessionStorage.getItem('goodys_chat_seen')) {
+      setTimeout(() => {
+        if (!win.classList.contains('gd-open')) {
+          sessionStorage.setItem('goodys_chat_seen', '1');
+          open();
+        }
+      }, 5000);
+    }
+
+    function append(role, text) {
+      const div = document.createElement('div');
+      div.className = 'gd-msg gd-msg-' + role;
+      div.textContent = text;
+      log.appendChild(div);
+      log.scrollTop = log.scrollHeight;
+      return div;
+    }
+    function typing() {
+      const div = document.createElement('div');
+      div.className = 'gd-msg gd-msg-bot gd-typing';
+      div.innerHTML = '<span></span><span></span><span></span>';
+      log.appendChild(div);
+      log.scrollTop = log.scrollHeight;
+      return div;
+    }
+    function botSay(text) {
+      return new Promise(resolve => {
+        const t = typing();
+        const delay = Math.min(900, 350 + text.length * 12);
+        setTimeout(() => {
+          t.remove();
+          append('bot', text);
+          resolve();
+        }, delay);
+      });
+    }
+    function clearInput() { inputArea.innerHTML = ''; }
+
+    function showChips(options, onPick) {
+      clearInput();
+      const wrap = document.createElement('div');
+      wrap.className = 'gd-chips';
+      options.forEach(opt => {
+        const b = document.createElement('button');
+        b.className = 'gd-chip';
+        b.textContent = opt.label;
+        b.addEventListener('click', () => {
+          [...wrap.querySelectorAll('button')].forEach(x => x.disabled = true);
+          append('user', opt.label);
+          onPick(opt.value !== undefined ? opt.value : opt.label);
+        });
+        wrap.appendChild(b);
+      });
+      inputArea.appendChild(wrap);
+    }
+
+    function showText(placeholder, validate, onSubmit) {
+      clearInput();
+      const row = document.createElement('div');
+      row.className = 'gd-text-row';
+      const input = document.createElement('input');
+      input.className = 'gd-text-input';
+      input.type = 'text';
+      input.placeholder = placeholder || '';
+      const send = document.createElement('button');
+      send.className = 'gd-send-btn';
+      send.textContent = 'SEND';
+      const err = document.createElement('div');
+      err.className = 'gd-error';
+      err.style.display = 'none';
+
+      function submit() {
+        const value = input.value.trim();
+        const v = validate ? validate(value) : { ok: !!value, msg: 'Please enter a value.' };
+        if (!v.ok) {
+          err.textContent = v.msg;
+          err.style.display = 'block';
+          return;
+        }
+        input.disabled = true;
+        send.disabled = true;
+        append('user', value);
+        onSubmit(value);
+      }
+      send.addEventListener('click', submit);
+      input.addEventListener('keydown', e => { if (e.key === 'Enter') submit(); });
+
+      row.appendChild(input);
+      row.appendChild(send);
+      inputArea.appendChild(row);
+      inputArea.appendChild(err);
+      input.focus();
+    }
+
+    async function post(path, payload) {
+      const res = await fetch(WEBHOOK_BASE + '/' + path, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(payload)
+      });
+      return res.json();
+    }
+
+    // ─── State machine ──────────────────────────────────────────
+    async function runIntro() {
+      await botSay("Hey — I'm Goody's helper. Would you like to schedule a free on-site estimate with Nick?");
+      showChips(
+        [{ label: 'Yes, please' }, { label: 'No thanks' }],
+        async (pick) => {
+          if (pick === 'No thanks') {
+            clearInput();
+            await botSay("All good — feel free to browse, and reach out anytime at (208) 721-9164.");
+            return;
+          }
+          await askName();
+        }
+      );
+    }
+
+    async function askName() {
+      await botSay("Awesome. What's your name?");
+      showText('Your name', v => ({ ok: v.length >= 2, msg: 'Please enter your name.' }), async (val) => {
+        lead.name = val;
+        await askPhone();
+      });
+    }
+
+    async function askPhone() {
+      await botSay(`Thanks ${lead.name.split(' ')[0]}. What's the best phone number to reach you?`);
+      showText('(208) 555-0123', v => {
+        const digits = v.replace(/\D/g, '');
+        return { ok: digits.length === 10 || digits.length === 11, msg: 'Please enter a valid 10-digit phone number.' };
+      }, async (val) => {
+        lead.phone = val;
+        await askService();
+      });
+    }
+
+    async function askService() {
+      await botSay("What kind of service are you looking for?");
+      showChips(
+        [
+          { label: 'Mowing' },
+          { label: 'Fertilization' },
+          { label: 'Cleanup' },
+          { label: 'Other' }
+        ],
+        async (pick) => {
+          if (pick === 'Other') {
+            await botSay("Got it — tell me what you have in mind.");
+            showText('e.g. aeration, sprinkler repair', v => ({ ok: v.length >= 2, msg: 'Please describe the service.' }), async (val) => {
+              lead.service_type = val;
+              await askAddress();
+            });
+          } else {
+            lead.service_type = pick;
+            await askAddress();
+          }
+        }
+      );
+    }
+
+    async function askAddress() {
+      await botSay("What's the property address? (street, city, state)");
+      showText('1234 Main St, Coeur d\'Alene, ID', v => ({ ok: v.length >= 6, msg: 'Please enter a complete address.' }), async (val) => {
+        lead.address = val;
+        await runGate();
+      });
+    }
+
+    function normalizeAddr(s) {
+      return (s || '')
+        .toLowerCase()
+        .replace(/[\u2018\u2019'`]/g, '')
+        .replace(/[.,;:!?\-_/\\()"]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    const CDA_ALIASES = [
+      'coeur dalene', 'coeur d alene', 'coeurdalene',
+      'couer dalene', 'couer d alene', 'couerdalene',
+      'coer dalene',  'coer d alene',
+      'coeur de alene', 'couer de alene',
+      'cda'
+    ];
+    const OTHER_CITY_TOKENS = ['post falls', 'hayden lake', 'hayden', 'harrison'];
+
+    function matchCity(addr) {
+      const n = normalizeAddr(addr);
+      if (CDA_ALIASES.some(a => n.includes(a))) return 'cda';
+      if (OTHER_CITY_TOKENS.some(c => n.includes(c))) return 'other';
+      return null;
+    }
+
+    function canonicalizeCda(raw) {
+      const pat = /c(?:o(?:eu|ue)r|oer)[\s\-']*d[e\s\-']*[\s\-']*alene|cda/i;
+      return raw.replace(pat, "Coeur d'Alene");
+    }
+
+    function isInArea(addr) { return matchCity(addr) !== null; }
+
+    async function runGate() {
+      const hit = matchCity(lead.address);
+      if (hit === 'cda') lead.address = canonicalizeCda(lead.address);
+      if (!hit) {
+        await botSay("Looks like you're outside our service area right now (we cover Post Falls, Hayden, Hayden Lake, Coeur d'Alene, and Harrison).");
+        await botSay("I've passed your info to Nick anyway in case things change. Thanks for reaching out!");
+        clearInput();
+        try {
+          await post('goodys-out-of-area-lead', {
+            name: lead.name,
+            phone: lead.phone,
+            service_type: lead.service_type,
+            address: lead.address
+          });
+        } catch (e) { /* silent — courtesy capture */ }
+        return;
+      }
+      await fetchSlots();
+    }
+
+    async function fetchSlots() {
+      await botSay("Pulling Nick's open times…");
+      let resp;
+      try {
+        resp = await post('goodys-check-availability', { days_ahead: 14 });
+      } catch (e) {
+        await botSay("Hmm, I couldn't reach our scheduler. Please call (208) 721-9164 and we'll get you set up.");
+        clearInput();
+        return;
+      }
+      const slots = (resp && resp.slots) || [];
+      if (!slots.length) {
+        await botSay("Nick's booked solid for the next two weeks. Give us a call at (208) 721-9164 and we'll find a way.");
+        clearInput();
+        return;
+      }
+      await botSay("Here's what Nick has open — pick one:");
+      showChips(
+        slots.map(s => ({ label: s.label, value: s.iso })),
+        async (slotIso) => { await bookSlot(slotIso); }
+      );
+    }
+
+    async function bookSlot(slotIso) {
+      clearInput();
+      await botSay("Booking that for you…");
+      let resp;
+      try {
+        resp = await post('goodys-book-consultation', {
+          name: lead.name,
+          phone: lead.phone,
+          service_type: lead.service_type,
+          service_address: lead.address,
+          slot_iso: slotIso
+        });
+      } catch (e) {
+        await botSay("Couldn't lock that one in — please call (208) 721-9164 and we'll book it directly.");
+        return;
+      }
+      if (resp && resp.booked) {
+        await botSay(`Booked! ${resp.when} at ${resp.address}.`);
+        await botSay("Nick will reach out before your appointment to confirm. Talk soon!");
+      } else if (resp && resp.message) {
+        await botSay(resp.message);
+        if (resp.reason === 'too_soon') {
+          await fetchSlots();
+        }
+      } else {
+        await botSay("Something went sideways. Please call (208) 721-9164 and we'll sort it.");
+      }
+    }
+  })();
+  </script>
+
 </body>
 </html>
