@@ -1470,6 +1470,8 @@
     <h2>Automated Messaging</h2>
     <p>When you text or call our business number, you may interact with an AI-powered assistant that helps schedule consultations and answer questions. By initiating contact via text message, you consent to receive automated replies related to your inquiry. You can opt out of automated messages at any time by replying STOP.</p>
 
+    <p>Opt-in consent is never shared, sold, or transferred to third parties or affiliates, and is not transferred between separate businesses. Phone numbers and SMS opt-in are program-specific to Goody's Lawn Care, LLC.</p>
+
     <h2>Information Sharing</h2>
     <p>We do not sell, rent, or trade your personal information to third parties. We may share information with service providers (such as our phone and messaging platform) solely to facilitate communication with you.</p>
 
@@ -2034,7 +2036,7 @@
         async (pick) => {
           if (pick === 'No thanks') {
             clearInput();
-            await botSay("All good — feel free to browse, and reach out anytime at (208) 721-9164.");
+            await botSay("All good — feel free to browse, and reach out anytime at (208) 551-6393.");
             return;
           }
           await askName();
@@ -2052,6 +2054,7 @@
 
     async function askPhone() {
       await botSay(`Thanks ${lead.name.split(' ')[0]}. What's the best phone number to reach you?`);
+      await botSay("Heads-up — by sharing your number you agree to receive SMS from Goody's Lawn Care about scheduling, confirmations, and reminders. Msg & data rates may apply. Reply STOP to opt out. See our Privacy Policy and Terms.");
       showText('(208) 555-0123', v => {
         const digits = v.replace(/\D/g, '');
         return { ok: digits.length === 10 || digits.length === 11, msg: 'Please enter a valid 10-digit phone number.' };
@@ -2151,13 +2154,13 @@
       try {
         resp = await post('goodys-check-availability', { days_ahead: 14 });
       } catch (e) {
-        await botSay("Hmm, I couldn't reach our scheduler. Please call (208) 721-9164 and we'll get you set up.");
+        await botSay("Hmm, I couldn't reach our scheduler. Please call (208) 551-6393 and we'll get you set up.");
         clearInput();
         return;
       }
       const slots = (resp && resp.slots) || [];
       if (!slots.length) {
-        await botSay("Nick's booked solid for the next two weeks. Give us a call at (208) 721-9164 and we'll find a way.");
+        await botSay("Nick's booked solid for the next two weeks. Give us a call at (208) 551-6393 and we'll find a way.");
         clearInput();
         return;
       }
@@ -2181,7 +2184,7 @@
           slot_iso: slotIso
         });
       } catch (e) {
-        await botSay("Couldn't lock that one in — please call (208) 721-9164 and we'll book it directly.");
+        await botSay("Couldn't lock that one in — please call (208) 551-6393 and we'll book it directly.");
         return;
       }
       if (resp && resp.booked) {
@@ -2193,7 +2196,7 @@
           await fetchSlots();
         }
       } else {
-        await botSay("Something went sideways. Please call (208) 721-9164 and we'll sort it.");
+        await botSay("Something went sideways. Please call (208) 551-6393 and we'll sort it.");
       }
     }
   })();
