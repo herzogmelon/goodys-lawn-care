@@ -1029,66 +1029,6 @@
     }
     .footer-copy a:hover { opacity: 1; }
 
-    /* ─── LEGAL PAGES ──────────────────────────────────────────── */
-    .legal-page {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 2000;
-      background: var(--soil);
-      overflow-y: auto;
-      padding: 4rem 5%;
-    }
-    .legal-page:target { display: block; }
-    .legal-close {
-      position: fixed;
-      top: 1.5rem;
-      right: 2rem;
-      z-index: 2001;
-      font-family: var(--font-body);
-      font-size: 0.8rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--hay);
-      background: none;
-      border: 1px solid var(--hay);
-      padding: 0.5rem 1.2rem;
-      cursor: pointer;
-      text-decoration: none;
-      transition: background 0.2s, color 0.2s;
-    }
-    .legal-close:hover { background: var(--hay); color: var(--soil); }
-    .legal-page h1 {
-      font-family: var(--font-display);
-      font-weight: 900;
-      font-size: clamp(1.8rem, 4vw, 2.5rem);
-      color: var(--frost);
-      margin-bottom: 0.5rem;
-    }
-    .legal-page .legal-updated {
-      font-size: 0.75rem;
-      color: var(--hay);
-      opacity: 0.7;
-      margin-bottom: 2.5rem;
-    }
-    .legal-page h2 {
-      font-family: var(--font-display);
-      font-weight: 800;
-      font-size: 1.1rem;
-      color: var(--hay);
-      margin: 2rem 0 0.75rem;
-    }
-    .legal-page p, .legal-page li {
-      font-family: var(--font-body);
-      font-size: 0.85rem;
-      color: var(--frost);
-      opacity: 0.75;
-      line-height: 1.8;
-      max-width: 720px;
-    }
-    .legal-page ul { list-style: disc; padding-left: 1.5rem; margin: 0.5rem 0; }
-    .legal-page li { margin-bottom: 0.3rem; }
-
     /* ─── RESPONSIVE ─────────────────────────────────────────────── */
     @media (max-width: 900px) {
       #services {
@@ -1435,85 +1375,9 @@
     </div>
     <div class="footer-bar">
       <span class="footer-copy">&copy; 2024 Goody's Lawn Care &middot; Coeur d'Alene, ID</span>
-      <span class="footer-copy">Licensed &amp; Insured &middot; <a href="#privacy">Privacy Policy</a> &middot; <a href="#terms">Terms &amp; Conditions</a></span>
+      <span class="footer-copy">Licensed &amp; Insured &middot; <a href="/privacy.html">Privacy Policy</a> &middot; <a href="/terms.html">Terms &amp; Conditions</a> &middot; <a href="/sms-consent.html">SMS Consent</a></span>
     </div>
   </footer>
-
-  <!-- ─── PRIVACY POLICY ──────────────────────────────────────── -->
-  <div id="privacy" class="legal-page">
-    <a href="#footer" class="legal-close">Close</a>
-    <h1>Privacy Policy</h1>
-    <p class="legal-updated">Last updated: April 9, 2026</p>
-
-    <h2>Who We Are</h2>
-    <p>Goody's Lawn Care, LLC ("we," "us," "our") provides commercial and residential lawn care services in North Idaho. This policy describes how we collect, use, and protect your personal information.</p>
-
-    <h2>Information We Collect</h2>
-    <p>When you contact us by phone, text message, or through our website, we may collect:</p>
-    <ul>
-      <li>Name and contact information (phone number, email address)</li>
-      <li>Property address and service location</li>
-      <li>Details about the services you're requesting</li>
-      <li>Text message conversation history related to scheduling</li>
-      <li>Call recordings or transcripts when calls are handled by our automated assistant</li>
-    </ul>
-
-    <h2>How We Use Your Information</h2>
-    <p>We use your information to:</p>
-    <ul>
-      <li>Respond to your inquiries and service requests</li>
-      <li>Schedule and confirm consultations and appointments</li>
-      <li>Send follow-up messages related to your service inquiry</li>
-      <li>Provide and improve our lawn care services</li>
-    </ul>
-
-    <h2>Automated Messaging</h2>
-    <p>When you text or call our business number, you may interact with an AI-powered assistant that helps schedule consultations and answer questions. By initiating contact via text message, you consent to receive automated replies related to your inquiry. You can opt out of automated messages at any time by replying STOP.</p>
-
-    <p>Opt-in consent is never shared, sold, or transferred to third parties or affiliates, and is not transferred between separate businesses. Phone numbers and SMS opt-in are program-specific to Goody's Lawn Care, LLC.</p>
-
-    <h2>Information Sharing</h2>
-    <p>We do not sell, rent, or trade your personal information to third parties. We may share information with service providers (such as our phone and messaging platform) solely to facilitate communication with you.</p>
-
-    <h2>Data Retention</h2>
-    <p>We retain your contact information and conversation history for as long as needed to provide services and respond to inquiries. Inactive conversation data is automatically cleaned up after 72 hours.</p>
-
-    <h2>Contact Us</h2>
-    <p>If you have questions about this privacy policy, contact us by phone at (208) 551-6393 or text our business number.</p>
-  </div>
-
-  <!-- ─── TERMS & CONDITIONS ──────────────────────────────────── -->
-  <div id="terms" class="legal-page">
-    <a href="#footer" class="legal-close">Close</a>
-    <h1>Terms &amp; Conditions</h1>
-    <p class="legal-updated">Last updated: April 9, 2026</p>
-
-    <h2>Agreement to Terms</h2>
-    <p>By contacting Goody's Lawn Care, LLC ("we," "us," "our") via phone, text message, or this website, you agree to these terms and conditions.</p>
-
-    <h2>Services</h2>
-    <p>We provide commercial and residential lawn care services in the North Idaho area, including but not limited to lawn mowing, fertilization, aeration, yard cleanup, and snow removal. All services are subject to availability and scheduling.</p>
-
-    <h2>Communication &amp; Messaging</h2>
-    <p>By texting our business phone number, you consent to receive text message replies related to your inquiry, including appointment scheduling, confirmations, and follow-up messages. Message and data rates may apply depending on your carrier. Message frequency varies based on your interaction.</p>
-    <ul>
-      <li>Reply <strong>STOP</strong> at any time to opt out of automated messages</li>
-      <li>Reply <strong>HELP</strong> for assistance</li>
-    </ul>
-    <p>We are not responsible for delayed or undelivered messages caused by your carrier or device.</p>
-
-    <h2>Estimates &amp; Pricing</h2>
-    <p>Consultations scheduled through our system are free. Service quotes provided during consultations are estimates and may change based on actual property conditions. Final pricing is confirmed before work begins.</p>
-
-    <h2>Limitation of Liability</h2>
-    <p>Goody's Lawn Care provides services on an "as is" basis. We are not liable for any indirect, incidental, or consequential damages arising from the use of our services or communication systems.</p>
-
-    <h2>Changes to Terms</h2>
-    <p>We may update these terms at any time. Continued use of our services after changes constitutes acceptance of the updated terms.</p>
-
-    <h2>Contact Us</h2>
-    <p>Questions about these terms? Call us at (208) 551-6393 or text our business number.</p>
-  </div>
 
   <script>
     // ─── Generate Animated SVG Background Paths ──────────────────
@@ -2030,7 +1894,8 @@
 
     // ─── State machine ──────────────────────────────────────────
     async function runIntro() {
-      await botSay("Hey — I'm Goody's helper. Would you like to schedule a free on-site estimate with Nick?");
+      await botSay("Hey — I'm Goody's helper. Before we start: by sharing your phone number, you'll agree to receive SMS from Goody's Lawn Care, LLC about scheduling, confirmations, and reminders. Msg frequency varies. Msg & data rates may apply. Reply STOP to opt out, HELP for help. We don't share your number with third parties. See goodyslawn.com/privacy.html and goodyslawn.com/terms.html.");
+      await botSay("Would you like to schedule a free on-site estimate with Nick?");
       showChips(
         [{ label: 'Yes, please' }, { label: 'No thanks' }],
         async (pick) => {
